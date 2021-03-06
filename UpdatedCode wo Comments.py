@@ -5,6 +5,8 @@ import argparse
 import imutils
 import time
 import cv2
+import dlib
+import Constants as cn
 
 ap = argparse.ArgumentParser()
 dd = DriverDrowsiness()
@@ -51,8 +53,8 @@ while cap.more():
             # cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
             # cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
 
-            # cv2.putText(frame, "EAR: {:.3f}".format(ear), (95, 30),
-            #             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+            cv2.putText(frame, "EAR: {:.3f}".format(ear), (95, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
             # -----------------------------------------------------------
 
         if dd.isBelowEARThreshold():
@@ -82,7 +84,7 @@ while cap.more():
 
         # exportValue()
         #print( 'PERCLOS: {:.2f}, Average fps: {:.2f}'.format(PERCLOS,frame_count/(time.time()-start_time )))
-
+    dd.exportValue()
     dd.incrementFrame()
 
     cv2.imshow('frame', frame)

@@ -6,22 +6,36 @@ from matplotlib import style
 
 #############################################
 style.use('fivethirtyeight')
-fig = plt.figure()
 
+fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, sharex=True)
 
 def animate(i):
-    data = pd.read_csv('data070120211620.csv')
-    x = data['Frame']
-    y = data['PERCLOS']
+    data = pd.read_csv('data030621233300.csv')
+    frames = data['Frame']
+    perclos = data['PERCLOS']
+    ear = data['Ear Value']
+    level = data['Alarm Level']
     
-    plt.cla()
-    plt.plot(x, y)
-    ax = plt.gca()
-    ax.set_ylim([0,100])
-    ax.set_ylabel('PERCLOS')
-    ax.set_xlabel('Frame')
+    ax1.cla()
+    ax1.plot(frames, perclos)
+    
+    ax2.cla()
+    ax2.plot(frames, ear)
+    
+    ax3.cla()
+    ax3.plot(frames, level)
+    
+    ax1.set_ylim([0,100])
+    ax1.set_ylabel('PERCLOS')
+    
+    ax2.set_ylabel('EAR')
+    ax2.set_ylim([0,1])
+    
+    ax1.set_ylim([0,5])
+    ax3.set_ylabel('Level')
+    ax3.set_xlabel('Frame')
 ############################################
 
-ani = FuncAnimation(plt.gcf(), animate, interval=250)
+ani = FuncAnimation(fig, animate, interval=250)
 plt.tight_layout()
 plt.show()

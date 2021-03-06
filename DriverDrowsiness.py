@@ -5,7 +5,7 @@ import datetime
 import csv
 import Constants as cn
 from imutils import face_utils
-
+import dlib
 
 class DriverDrowsiness:
 
@@ -25,7 +25,10 @@ class DriverDrowsiness:
         (self.lStart, self.lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
         (self.rStart,
          self.rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
-
+        
+        self.filename = 'data{}.csv'.format(
+            datetime.datetime.now().strftime("%m%d%y%H%M%S"))
+            
         print("[INFO] loading face detector ...")
         self.detector = cv2.CascadeClassifier(
             "haarcascade_frontalface_alt.xml")
@@ -44,16 +47,16 @@ class DriverDrowsiness:
         return (A + B) / (2.0 * C)
 
     def exportValue(self):
-        filename = 'data{}.csv'.format(
-            datetime.datetime.now().strftime("%m%d%y%H%M%S"))
+        
 
-        with open(filename, 'a') as csv_file:
+        with open(self.filename, 'a') as csv_file:
             csv_writer = csv.DictWriter(csv_file, fieldnames=["Frame",
-                                                              "Ear Value", "Abnormal Blink", "PERCLOS"])
+                                                              "Ear Value", "Abnormal Blink", "PERCLOS", "Alarm Level"])
             info = {"Frame": self.frame_count,
                     "Ear Value": "{:.3f}".format(self.ear),
-                    "Abnormal Blink": self.abn_blink
-                    "PERCLOS": "{:.2f}".format(self.perclos)}
+                    "Abnormal Blink": self.abn_blink,
+                    "PERCLOS": "{:.2f}".format(self.perclos),
+                    "Alarm Level": self.level}
             csv_writer.writerow(info)
         return
 
