@@ -8,9 +8,11 @@ from matplotlib import style
 style.use('fivethirtyeight')
 
 fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, sharex=True)
-
+# fig, (ax1) = plt.subplots()
+# data = pd.read_csv('data030721132432.csv')
+# print( data["Frame"] )
 def animate(i):
-    data = pd.read_csv('data030621233300.csv')
+    data = pd.read_csv('data030721132432.csv')
     frames = data['Frame']
     perclos = data['PERCLOS']
     ear = data['Ear Value']
@@ -20,7 +22,7 @@ def animate(i):
     ax1.plot(frames, perclos)
     
     ax2.cla()
-    ax2.plot(frames, ear)
+    ax2.plot(frames, ear, linewidth=1)
     
     ax3.cla()
     ax3.plot(frames, level)
@@ -31,7 +33,7 @@ def animate(i):
     ax2.set_ylabel('EAR')
     ax2.set_ylim([0,1])
     
-    ax1.set_ylim([0,5])
+    ax3.set_ylim([0,5])
     ax3.set_ylabel('Level')
     ax3.set_xlabel('Frame')
 ############################################

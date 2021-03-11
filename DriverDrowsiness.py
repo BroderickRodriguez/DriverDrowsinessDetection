@@ -28,14 +28,21 @@ class DriverDrowsiness:
         
         self.filename = 'data{}.csv'.format(
             datetime.datetime.now().strftime("%m%d%y%H%M%S"))
-            
+        
+        with open(self.filename, 'a') as csv_file:
+            csv_writer = csv.DictWriter(csv_file, fieldnames=["Frame",
+                                                              "Ear Value", "Abnormal Blink", "PERCLOS", "Alarm Level"])
+            csv_writer.writeheader()
+        
+        
+        
         print("[INFO] loading face detector ...")
         self.detector = cv2.CascadeClassifier(
             "haarcascade_frontalface_alt.xml")
 
         print("[INFO] loading facial landmark predictor ...")
         self.predictor = dlib.shape_predictor(
-            "shape_predictor_68_face_landmarks.dat")
+            "../shape_predictor_68_face_landmarks.dat")
 
     def euclidean_dist(self, ptA, ptB):
         return np.linalg.norm(ptA - ptB)
