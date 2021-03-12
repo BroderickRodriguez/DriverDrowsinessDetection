@@ -34,4 +34,4 @@ class vas_bluetooth:
         self.sock.close()
 
     def send(self, level):
-	self.sock.send(str(level).encode())
+        self.sock.send(str(level).encode())
