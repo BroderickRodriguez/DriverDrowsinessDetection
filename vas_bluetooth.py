@@ -1,24 +1,32 @@
 import bluetooth
 
 
-class VAS:
+class vas_bluetooth:
 
     sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+    port = 1
 
-    def __init__(self, addr):
-        print "[INFO] Searching for devices ..."
+    def __init__(self, addr, tries=5):
         self.addr = addr
-        while !self.connect():
-            pass
+        self.tries = tries
 
     def connect(self):
 
+        print("[INFO] Searching for devices ...")
         nearby_devices = bluetooth.discover_devices()
-        if vas_addr in nearby_devices:
-            self.sock.connect((self.addr))
-            print "[INFO] Successfully connected to VAS "
-            return True
-        return False
+        num = 0
+        while (self.addr not in nearby_devices):
+
+            print("[INFO] Searching for devices ...")
+            nearby_devices = bluetooth.discover_devices()
+            num += 1
+
+            if (num == tries):
+                return False
+
+        self.sock.connect((self.addr))
+        print "[INFO] Successfully connected to VAS "
+        return True
 
     def disconnect(self):
         # Close socket connection to device
