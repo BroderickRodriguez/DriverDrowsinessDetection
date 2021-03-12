@@ -24,7 +24,7 @@ class vas_bluetooth:
             if (num == tries):
                 return False
 
-        self.sock.connect((self.addr))
+        self.sock.connect((self.addr, self.port))
         print("[INFO] Successfully connected to VAS, ",
               bluetooth.lookup_name(self.addr))
         return True
@@ -34,4 +34,4 @@ class vas_bluetooth:
         self.sock.close()
 
     def send(self, level):
-        self.sock.send(data)
+	self.sock.send(str(level).encode())

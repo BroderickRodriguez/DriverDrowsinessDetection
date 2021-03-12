@@ -1,4 +1,4 @@
-import vas_bluetooth
+from vas_bluetooth import vas_bluetooth
 import time
 import random
 
