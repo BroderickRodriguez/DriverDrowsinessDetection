@@ -1,34 +1,19 @@
-import bluetooth
+import vas_bluetooth
 import time
-
-print ("Searching for devices...")
-print ("")
-
-nearby_devices = bluetooth.discover_devices()
-
-num = 0
-
-print ("Select your device by entering its corresponding number ..")
-for i in nearby_devices:
-	num+=1
-	print (num , ": " , bluetooth.lookup_name(i))
+import random
 
 
-selection = int(input("> ")) - 1
-print ("You have selected", bluetooth.lookup_name(nearby_devices[selection]))
-bd_addr = nearby_devices[selection]
+bt = vas_bluetooth("00:19:10:11:0E:3F")
 
-port = 1
 
-sock = bluetooth.BluetoothSocket( bluetooth.RFCOMM )
+if bt.connect():
 
-sock.connect((bd_addr, port))
+    for count in range(0, 10):
+        alarm = random.randint(0, 3)
 
-time.sleep(2)
+        print("Sending alarm level: ", alarm)
+        bt.send(alarm)
 
-print ("sending 2 to device")
-sock.send("2")
+        time.sleep(1)
 
-time.sleep(2)
-print ("closing sock")
-sock.close()
+bt.disconnect()
