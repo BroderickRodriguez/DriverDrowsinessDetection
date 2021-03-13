@@ -25,7 +25,7 @@ class vas_bluetooth:
                 return False
 
         self.sock.connect((self.addr, self.port))
-        print("[INFO] Successfully connected to VAS, ",
+        print("[INFO] Successfully connected to VAS: ",
               bluetooth.lookup_name(self.addr))
         return True
 
