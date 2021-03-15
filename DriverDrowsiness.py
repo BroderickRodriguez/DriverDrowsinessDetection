@@ -6,6 +6,8 @@ import csv
 import Constants as cn
 from imutils import face_utils
 import dlib
+from vas_bluetooth import vas_bluetooth
+
 
 class DriverDrowsiness:
 
@@ -25,17 +27,15 @@ class DriverDrowsiness:
         (self.lStart, self.lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
         (self.rStart,
          self.rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
-        
+
         self.filename = 'data{}.csv'.format(
             datetime.datetime.now().strftime("%m%d%y%H%M%S"))
-        
+
         with open(self.filename, 'a') as csv_file:
             csv_writer = csv.DictWriter(csv_file, fieldnames=["Frame",
                                                               "Ear Value", "Abnormal Blink", "PERCLOS", "Alarm Level"])
             csv_writer.writeheader()
-        
-        
-        
+
         print("[INFO] loading face detector ...")
         self.detector = cv2.CascadeClassifier(
             "haarcascade_frontalface_alt.xml")
@@ -43,6 +43,9 @@ class DriverDrowsiness:
         print("[INFO] loading facial landmark predictor ...")
         self.predictor = dlib.shape_predictor(
             "../shape_predictor_68_face_landmarks.dat")
+
+        self.bt = vas_bluetooth("00:19:10:11:0E:3F")
+        self.connected = bt.connect()
 
     def euclidean_dist(self, ptA, ptB):
         return np.linalg.norm(ptA - ptB)
@@ -54,7 +57,6 @@ class DriverDrowsiness:
         return (A + B) / (2.0 * C)
 
     def exportValue(self):
-        
 
         with open(self.filename, 'a') as csv_file:
             csv_writer = csv.DictWriter(csv_file, fieldnames=["Frame",
@@ -80,6 +82,13 @@ class DriverDrowsiness:
 
     def sendAlarm(self, level):
         self.level = level
+
+        if not self.connected:
+            print("[WARNING] Bluetooth alarm not connected")
+            return
+
+        print("[INFO] Sending Alarm Level: ", self.level)
+        self.bt.send(level)
         return
 
     def detectFaces(self, frame):
