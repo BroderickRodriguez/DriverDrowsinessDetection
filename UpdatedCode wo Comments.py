@@ -48,10 +48,10 @@ while cap.more():
 
             # Display purposes
             # ---------OPTIONAL------------------------------------------
-            # leftEyeHull = cv2.convexHull(leftEye)
-            # rightEyeHull = cv2.convexHull(rightEye)
-            # cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
-            # cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
+            leftEyeHull = cv2.convexHull(dd.leftEye)
+            rightEyeHull = cv2.convexHull(dd.rightEye)
+            cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
+            cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
 
             cv2.putText(frame, "EAR: {:.3f}".format(ear), (95, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
@@ -68,6 +68,7 @@ while cap.more():
                     # cv2.putText(frame, "DROWSINESS ALERT!", (10, 30),
                     #    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
                     dd.sendAlarm(2)
+            
         else:
             dd.abn_blink = 0
             dd.ear_counter = 0

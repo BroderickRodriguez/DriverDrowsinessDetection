@@ -23,29 +23,31 @@ class DriverDrowsiness:
         self.PERCLOS_LIST = []
         self.level = 0
         self.gray = 0
+        self.awake = 0
+        self.sdrowsy = 0
+        self.drowsy = 0
 
         (self.lStart, self.lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
         (self.rStart,
          self.rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
 
-        self.filename = 'data{}.csv'.format(
-            datetime.datetime.now().strftime("%m%d%y%H%M%S"))
+        self.filename = 'dddExport.csv'
 
-        with open(self.filename, 'a') as csv_file:
+        with open(self.filename, 'w') as csv_file:
             csv_writer = csv.DictWriter(csv_file, fieldnames=["Frame",
-                                                              "Ear Value", "Abnormal Blink", "PERCLOS", "Alarm Level"])
+                                                              "Ear Value", "Abnormal Blink", "PERCLOS", "Alarm Level", "awake", "sdrowsy", "drowsy"])
             csv_writer.writeheader()
 
         print("[INFO] loading face detector ...")
         self.detector = cv2.CascadeClassifier(
-            "haarcascade_frontalface_alt.xml")
+            "haarcascade_frontalface_default.xml")
 
         print("[INFO] loading facial landmark predictor ...")
         self.predictor = dlib.shape_predictor(
             "../shape_predictor_68_face_landmarks.dat")
 
         self.bt = vas_bluetooth("00:19:10:11:0E:3F")
-        self.connected = bt.connect()
+        self.connected = self.bt.connect()
 
     def euclidean_dist(self, ptA, ptB):
         return np.linalg.norm(ptA - ptB)
@@ -60,12 +62,15 @@ class DriverDrowsiness:
 
         with open(self.filename, 'a') as csv_file:
             csv_writer = csv.DictWriter(csv_file, fieldnames=["Frame",
-                                                              "Ear Value", "Abnormal Blink", "PERCLOS", "Alarm Level"])
+                                                              "Ear Value", "Abnormal Blink", "PERCLOS", "Alarm Level", "awake", "sdrowsy", "drowsy"])
             info = {"Frame": self.frame_count,
                     "Ear Value": "{:.3f}".format(self.ear),
                     "Abnormal Blink": self.abn_blink,
                     "PERCLOS": "{:.2f}".format(self.perclos),
-                    "Alarm Level": self.level}
+                    "Alarm Level": self.level,
+                    "awake": self.awake,
+                    "sdrowsy": self.sdrowsy,
+                    "drowsy": self.drowsy}
             csv_writer.writerow(info)
         return
 
@@ -82,7 +87,15 @@ class DriverDrowsiness:
 
     def sendAlarm(self, level):
         self.level = level
-
+        
+        if level == 0:
+            self.awake += 1
+        elif level == 1:
+            self.sdrowsy += 1
+        elif level == 2:
+            self.drowsy += 1
+        
+        
         if not self.connected:
             print("[WARNING] Bluetooth alarm not connected")
             return
@@ -96,12 +109,12 @@ class DriverDrowsiness:
         return self.detector.detectMultiScale(self.gray, 1.3, 5)
 
     def computeEAR(self, shape):
-        leftEye = shape[self.lStart:self.lEnd]
-        rightEye = shape[self.rStart:self.rEnd]
-        leftEAR = self.eye_aspect_ratio(leftEye)
-        rightEAR = self.eye_aspect_ratio(rightEye)
+        self.leftEye = shape[self.lStart:self.lEnd]
+        self.rightEye = shape[self.rStart:self.rEnd]
+        self.leftEAR = self.eye_aspect_ratio(self.leftEye)
+        self.rightEAR = self.eye_aspect_ratio(self.rightEye)
 
-        self.ear = (leftEAR + rightEAR) / 2.0
+        self.ear = (self.leftEAR + self.rightEAR) / 2.0
 
         return self.ear
 
