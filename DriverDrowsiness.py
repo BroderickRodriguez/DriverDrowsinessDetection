@@ -40,7 +40,7 @@ class DriverDrowsiness:
 
         print("[INFO] loading face detector ...")
         self.detector = cv2.CascadeClassifier(
-            "haarcascade_frontalface_default.xml")
+            "haarcascade_frontalface_alt.xml")
 
         print("[INFO] loading facial landmark predictor ...")
         self.predictor = dlib.shape_predictor(
@@ -87,15 +87,14 @@ class DriverDrowsiness:
 
     def sendAlarm(self, level):
         self.level = level
-        
+
         if level == 0:
             self.awake += 1
         elif level == 1:
             self.sdrowsy += 1
         elif level == 2:
             self.drowsy += 1
-        
-        
+
         if not self.connected:
             print("[WARNING] Bluetooth alarm not connected")
             return
@@ -106,7 +105,7 @@ class DriverDrowsiness:
 
     def detectFaces(self, frame):
         self.gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        return self.detector.detectMultiScale(self.gray, 1.3, 5)
+        return self.detector.detectMultiScale(self.gray, scaleFactor=1.3, minNeighbors=4, minSize=(30, 30))
 
     def computeEAR(self, shape):
         self.leftEye = shape[self.lStart:self.lEnd]
