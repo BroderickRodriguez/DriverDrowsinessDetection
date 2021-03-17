@@ -1,4 +1,5 @@
 from imutils.video import FileVideoStream
+from imutils.video import WebcamVideoStream
 from imutils import face_utils
 from DriverDrowsiness import DriverDrowsiness
 import argparse
@@ -13,16 +14,21 @@ dd = DriverDrowsiness()
 
 ap.add_argument("-v", "--video", required=True,
                 help="path to where the video source resides")
+ap.add_argument("-m", "--mode", required=True,
+                help="choose if using video file or stream")
 args = vars(ap.parse_args())
 
 
 print("[INFO] starting video stream")
-cap = FileVideoStream(args["video"]).start()
+if args["mode"] == "file":
+    cap = FileVideoStream(args["video"]).start()
+else:
+    cap = WebcamVideoStream(src=0).start()
 time.sleep(1.0)
 
 ear = 0
 
-while cap.more():
+while True:
 
     frame = cap.read()
     frame = imutils.resize(frame, width=360)
@@ -68,7 +74,7 @@ while cap.more():
                     # cv2.putText(frame, "DROWSINESS ALERT!", (10, 30),
                     #    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
                     dd.sendAlarm(2)
-            
+
         else:
             dd.abn_blink = 0
             dd.ear_counter = 0
@@ -89,6 +95,9 @@ while cap.more():
     dd.incrementFrame()
 
     cv2.imshow('frame', frame)
+
+    if args["mode"] == "file" and not cap.more():
+        break
     if cv2.waitKey(1) & 0xFF == ord("q"):
         break
 
