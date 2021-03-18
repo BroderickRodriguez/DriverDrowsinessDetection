@@ -24,17 +24,17 @@ class FPS:
 		# start and end intervals
 		self._numFrames += 1
 
-    def hasOneMinuteElapsed(self):
-        return self.elapsed() == 60
-
-    def fpm(self):
-        return self._numFrames
+	def fpm(self):
+		return self._numFrames
 
 	def elapsed(self):
 		# return the total number of seconds between the start and
 		# end interval
-		return (self._end - self._start).total_seconds()
+		return (datetime.datetime.now() - self._start).total_seconds()
 
 	def fps(self):
 		# compute the (approximate) frames per second
 		return self._numFrames / self.elapsed()
+	
+	def hasOneMinuteElapsed(self):
+		return (self.elapsed() >= 45)

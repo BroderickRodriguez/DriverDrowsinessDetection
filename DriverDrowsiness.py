@@ -44,7 +44,7 @@ class DriverDrowsiness:
 
         print("[INFO] loading facial landmark predictor ...")
         self.predictor = dlib.shape_predictor(
-            "../shape_predictor_68_face_landmarks.dat")
+            "shape_predictor_68_face_landmarks.dat")
 
         self.bt = vas_bluetooth("00:19:10:11:0E:3F")
         self.connected = self.bt.connect()
@@ -75,10 +75,7 @@ class DriverDrowsiness:
         return
 
     def computerPerclos(self, i, N):
-        if i >= 840:
-            self.perclos = sum(self.ABN_BLINK[(i-N):])/N * 100
-        else:
-            self.perclos = 0
+        self.perclos = sum(self.ABN_BLINK[(i-N):])/N * 100
         self.PERCLOS_LIST.append(self.perclos)
         return self.perclos
 
@@ -96,10 +93,10 @@ class DriverDrowsiness:
             self.drowsy += 1
 
         if not self.connected:
-            print("[WARNING] Bluetooth alarm not connected")
+            #print("[INFO][Disconnected]Sending Alarm Level: ", self.level)
             return
 
-        print("[INFO] Sending Alarm Level: ", self.level)
+        #print("[INFO] Sending Alarm Level: ", self.level)
         self.bt.send(level)
         return
 

@@ -21,7 +21,7 @@ class vas_bluetooth:
             nearby_devices = bluetooth.discover_devices()
             num += 1
 
-            if (num == tries):
+            if (num == self.tries):
                 return False
 
         self.sock.connect((self.addr, self.port))

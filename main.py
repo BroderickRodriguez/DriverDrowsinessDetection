@@ -14,7 +14,7 @@ from fps import FPS
 ap = argparse.ArgumentParser()
 dd = DriverDrowsiness()
 
-ap.add_argument("-v", "--video", required=True,
+ap.add_argument("-v", "--video", required=False,
                 help="path to where the video source resides")
 ap.add_argument("-m", "--mode", required=True,
                 help="choose if using video file or stream")
