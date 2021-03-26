@@ -89,7 +89,7 @@ while True:
         #     print('Average EAR for the first 1 minute:{:.2f}'.format(
         #         sum(dd.EAR_LIST)/840))
 
-        if fps.hasOneMinuteElapsed():
+        if fps.hasSecondsElapsed(30):
             PERCLOS = dd.computerPerclos(dd.frame_count, fps.fpm())
         level = 0 if PERCLOS < cn.slight_drowsy else 1 if PERCLOS < cn.drowsy else 2
         dd.sendAlarm(level)
@@ -99,7 +99,7 @@ while True:
     dd.exportValue()
     dd.incrementFrame()
 
-    if not fps.hasOneMinuteElapsed():
+    if not fps.hasSecondsElapsed(30):
         fps.update()
 
     cv2.imshow('frame', frame)
