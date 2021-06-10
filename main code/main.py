@@ -85,7 +85,7 @@ while True:
         #     print('Average EAR for the first 1 minute:{:.2f}'.format(
         #         sum(dd.EAR_LIST)/840))
 
-        PERCLOS = dd.computerPerclos(dd.frame_count, 840)
+        PERCLOS = dd.computerPerclos(dd.frame_count, cn.TOTAL_WINDOW_FRAMES)
         level = 0 if PERCLOS < cn.slight_drowsy else 1 if PERCLOS < cn.drowsy else 2
         dd.sendAlarm(level)
 
