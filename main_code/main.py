@@ -2,6 +2,7 @@ from imutils.video import FileVideoStream
 from imutils.video import WebcamVideoStream
 from imutils import face_utils
 from DriverDrowsiness import DriverDrowsiness
+from fps import FPS
 import argparse
 import imutils
 import time
@@ -11,13 +12,13 @@ import Constants as cn
 
 ap = argparse.ArgumentParser()
 dd = DriverDrowsiness()
+fps = FPS()
 
-ap.add_argument("-v", "--video", required=True,
+ap.add_argument("-v", "--video", required=False,
                 help="path to where the video source resides")
 ap.add_argument("-m", "--mode", required=True,
                 help="choose if using video file or stream")
 args = vars(ap.parse_args())
-
 
 print("[INFO] starting video stream")
 if args["mode"] == "file":
@@ -25,13 +26,13 @@ if args["mode"] == "file":
 else:
     cap = WebcamVideoStream(src=0).start()
 time.sleep(1.0)
-
+fps.start()
 ear = 0
 
 while True:
 
     frame = cap.read()
-    frame = imutils.resize(frame, width=360)
+    frame = imutils.resize(frame, width=480)
     rects = dd.detectFaces(frame)
 
     dd.abn_blink = 0
@@ -88,11 +89,19 @@ while True:
         PERCLOS = dd.computerPerclos(dd.frame_count, cn.TOTAL_WINDOW_FRAMES)
         level = 0 if PERCLOS < cn.slight_drowsy else 1 if PERCLOS < cn.drowsy else 2
         dd.sendAlarm(level)
+        
+        cv2.putText(frame, "PERCLOS: {:.3f}".format(PERCLOS), (10, 80),
+        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
         # exportValue()
         #print( 'PERCLOS: {:.2f}, Average fps: {:.2f}'.format(PERCLOS,frame_count/(time.time()-start_time )))
     dd.exportValue()
     dd.incrementFrame()
+    fps.update()
+    fps.stop()
+    
+    cv2.putText(frame, "Average FPS: {:.1f}".format(fps.fps()), (10, 340),
+    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
     cv2.imshow('frame', frame)
 

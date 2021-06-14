@@ -13,7 +13,7 @@ fig2 = plt.figure()
 # data = pd.read_csv('data030721132432.csv')
 # print( data["Frame"] )
 def animate(i):
-    data = pd.read_csv('dddExport.csv')
+    data = pd.read_csv('../main_code/dddExport.csv')
     frames = data['Frame']
     perclos = data['PERCLOS']
     ear = data['Ear Value']
@@ -40,7 +40,7 @@ def animate(i):
 ############################################
 
 def animate2(i):
-    data = pd.read_csv('dddExport.csv')
+    data = pd.read_csv('../main_code/dddExport.csv')
     awake = data['awake'].iloc[-1]
     sdrowsy = data['sdrowsy'].iloc[-1]
     drowsy = data['drowsy'].iloc[-1]
@@ -58,5 +58,4 @@ def animate2(i):
     
 ani = FuncAnimation(fig, animate, interval=250)
 ani2 = FuncAnimation(fig2, animate2, interval=250)
-plt.tight_layout()
 plt.show()

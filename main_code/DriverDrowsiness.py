@@ -96,7 +96,8 @@ class DriverDrowsiness:
             self.drowsy += 1
 
         if not self.connected:
-            print("[WARNING] Bluetooth alarm not connected")
+            print("[INFO-d] Sending Alarm Level: ", self.level)
+            # print("[WARNING] Bluetooth alarm not connected")
             return
 
         print("[INFO] Sending Alarm Level: ", self.level)
