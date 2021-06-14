@@ -100,7 +100,7 @@ class DriverDrowsiness:
             # print("[WARNING] Bluetooth alarm not connected")
             return
 
-        print("[INFO] Sending Alarm Level: ", self.level)
+        print("[", datetime.datetime.now().strftime("%x %X"), "] Alarm ", self.level)
         self.bt.send(level)
         return
 

@@ -30,16 +30,16 @@ fps.start()
 ear = 0
 
 while True:
-
+    sendAlarm = True
     frame = cap.read()
-    frame = imutils.resize(frame, width=480)
+    frame = imutils.resize(frame, width=360)
     rects = dd.detectFaces(frame)
 
     dd.abn_blink = 0
     if len(rects) == 0:
         dd.noface_counter += 1
         if dd.isNoFaceThreshold():
-            print("[WARNING] NO FACE DETECTED")
+            #print("[WARNING] NO FACE DETECTED")
             dd.sendAlarm(3)
         dd.updateLists()
 
@@ -74,6 +74,7 @@ while True:
                     # draw an alarm on the frame
                     # cv2.putText(frame, "DROWSINESS ALERT!", (10, 30),
                     #    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                    sendAlarm = False
                     dd.sendAlarm(2)
 
         else:
@@ -88,7 +89,8 @@ while True:
 
         PERCLOS = dd.computerPerclos(dd.frame_count, cn.TOTAL_WINDOW_FRAMES)
         level = 0 if PERCLOS < cn.slight_drowsy else 1 if PERCLOS < cn.drowsy else 2
-        dd.sendAlarm(level)
+        if sendAlarm:
+            dd.sendAlarm(level)
         
         cv2.putText(frame, "PERCLOS: {:.3f}".format(PERCLOS), (10, 80),
         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
@@ -100,7 +102,7 @@ while True:
     fps.update()
     fps.stop()
     
-    cv2.putText(frame, "Average FPS: {:.1f}".format(fps.fps()), (10, 340),
+    cv2.putText(frame, "Average FPS: {:.1f}".format(fps.fps()), (10, 240),
     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
     cv2.imshow('frame', frame)
